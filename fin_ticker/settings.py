@@ -1,6 +1,6 @@
 # INF601 - Advanced Programming in Python
 # James Kobell
-# Mini Project 4
+# Final Project
 """
 Django settings for fin_ticker project.
 

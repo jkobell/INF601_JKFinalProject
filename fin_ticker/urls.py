@@ -1,6 +1,6 @@
 # INF601 - Advanced Programming in Python
 # James Kobell
-# Mini Project 4
+# Final Project
 """fin_ticker URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:

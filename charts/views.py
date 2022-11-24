@@ -1,6 +1,6 @@
 # INF601 - Advanced Programming in Python
 # James Kobell
-# Mini Project 4
+# Final Project
 from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -58,7 +58,7 @@ def logout_request(request):
 def index(request):
     pages_list = ['exchange', 'currency', 'ticker'] #todo - move to model
     context = { #params: page name, list of links
-        'page_name': 'Site Index',
+        'page_name': 'Dashboard',
         'pages_list': pages_list,
     }
     return render(request, 'charts/index.html', context=context)

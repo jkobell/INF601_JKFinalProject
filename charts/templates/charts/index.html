@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<nav class="navbar navbar-expand-sm bg-light border-bottom justify-content-center">
-    <div class="ms-5">
-        <h3 class="text-secondary">{{page_name}}</h3>
-    </div>
-</nav>  
+    {% if user.is_authenticated %}
+        <nav class="navbar navbar-expand-sm bg-light border-bottom justify-content-center">
+            <div class="ms-5">
+                <h3 class="text-secondary">{{ user.username }} {{page_name}}</h3>
+            </div>
+        </nav>
+    {% endif %}
 {% endblock %}
 
 {% block content %}  

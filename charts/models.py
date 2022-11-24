@@ -1,7 +1,8 @@
 # INF601 - Advanced Programming in Python
 # James Kobell
-# Mini Project 4
+# Final Project
 from django.db import models
+from django.conf import settings
 
 class Timezone(models.Model): #foreign key in Exchange
     timezone = models.CharField(max_length=25)
@@ -45,13 +46,14 @@ class Ticker(models.Model): #foreign key for Chart
         return 'Ticker: ' + self.name
     
 class Chart(models.Model): #active trading and historical data 
-    ticker = models.ForeignKey(Ticker, on_delete=models.CASCADE)
-    is_active = models.BooleanField()
-    name = models.CharField(max_length=50)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    #ticker = models.ForeignKey(Ticker, on_delete=models.CASCADE)
+    #is_active = models.BooleanField()
+    chart_type = models.CharField(max_length=50)
+    #start_date = models.DateField()
+    #end_date = models.DateField()
     bg_color = models.CharField(max_length=25)
     curve_color = models.CharField(max_length=25)
+    file_format = models.CharField(max_length=5)
 
     def __str__(self):# replaces Object(1) in displayed name
         return 'Chart: ' + self.name
@@ -68,6 +70,25 @@ class Intraday(models.Model): #for active trading charts
     
     def __str__(self):# replaces Object(1) in displayed name
         return 'Intraday: ' + self.name
+
+class Accounts(models.Model):
+    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    has_month_api_calls_limit = models.BooleanField()
+    month_api_calls_limit = models.SmallIntegerField()
+    month_api_calls_counter = models.SmallIntegerField()
+    has_saved_charts_limit = models.BooleanField()
+    saved_charts_limit = models.SmallIntegerField()
+    saved_charts_counter = models.SmallIntegerField()
+
+class UsersCharts(models.Model):
+    account = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    ticker = models.ForeignKey(Ticker, on_delete=models.CASCADE)
+    chart = models.ForeignKey(Chart, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    save_date = models.DateField()
+
+
 
 
     

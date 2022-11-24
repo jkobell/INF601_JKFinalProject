@@ -1,6 +1,6 @@
 # INF601 - Advanced Programming in Python
 # James Kobell
-# Mini Project 4
+# Final Project
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os

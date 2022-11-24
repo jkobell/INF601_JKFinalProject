@@ -1,7 +1,7 @@
 
 # INF601 - Advanced Programming in Python
 # James Kobell
-# Mini Project 4
+# Final Project
  
 from django.apps import AppConfig
 
