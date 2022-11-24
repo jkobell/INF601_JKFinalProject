@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block header %}
+<nav class="navbar navbar-expand-sm bg-light border-bottom justify-content-center">
+    <div class="ms-5">
+        <h3 class="text-secondary">{{page_name}}</h3>
+    </div>
+</nav>  
+{% endblock %}
+
+{% block content %}  
+  <article class="ms-5 mt-1">
+    {% if exchange_content %}
+    <div class="d-flex justify-content-center">
+        <ul class="bg-secondary bg-opacity-25 px-5 py-3">
+            {% for item in exchange_content %}
+                {% if item.name %}
+                    <li class="fs-4 py-2"><B>Name: </B>{{item.name}}</li>
+                {% endif %}
+                {% if item.acronym %}
+                    <li class="fs-4 py-2"><B>Acronym: </B>{{item.acronym}}</li>
+                {% endif %}
+                {% if item.market_id %}
+                    <li class="fs-4 py-2"><B>Mic: </B>{{item.market_id}}</li>
+                {% endif %}
+                {% if item.country %}
+                    <li class="fs-4 py-2"><B>Country: </B>{{item.country}}</li>
+                {% endif %}
+                {% if item.country_code %}
+                    <li class="fs-4 py-2"><B>Country code: </B>{{item.country_code}}</li>
+                {% endif %}
+                {% if item.city %}
+                    <li class="fs-4 py-2"><B>City: </B>{{item.city}}</li>
+                {% endif %}
+                {% if item.website %}
+                    <li class="fs-4 py-2"><B>Website: </B>{{item.website}}</li>
+                {% endif %}
+                {% if item.timezone %}
+                    <li class="fs-4 py-2"><B>Timezone: </B>{{item.timezone.timezone}}</li>
+                {% endif %}
+                {% if item.currency %}
+                    <li class="fs-4 py-2"><B>Currency: </B>{{item.currency.name}}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    
+    {% else %}
+        <p>Selected Exchange not available.</p>
+    {% endif %}
+</article>   
+{% endblock %}

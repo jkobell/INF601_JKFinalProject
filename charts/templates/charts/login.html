@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2 class="ms-5">{% block title %}Log In{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-3 ms-5 text-danger fs-5">
+    {% if messages %}  
+    <ul>   
+        {% for message in messages %}  
+            <li>{{ message }}</li>  
+        {% endfor %}  
+    </ul>   
+    {% endif %} 
+    <form method="post">
+    {% csrf_token %}
+    <div class="d-flex justify-content-center form-control form-group bg-light mb-3">
+        <div>
+            <div class="form-control-lg">                        
+                {{form.username.errors}}
+                <h4>{{form.username.label}}</h4>
+                {{form.username}}
+            </div> 
+            <div class="form-control-lg">
+                {{form.password.errors}}
+                <h4>{{form.password.label}}</h4>
+                {{form.password}}
+            </div>
+        </div>
+    </div>
+    <div class="form-group mb-3">
+    <button type="submit" class="btn ps-5 pe-5 btn-primary opacity-75">Login</button>
+    </div>              
+    </form>
+</div>
+{% endblock %}
