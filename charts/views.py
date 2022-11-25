@@ -7,9 +7,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.cache import never_cache
-from .models import Exchange
-from .models import Currency
-from .models import Ticker
+from .models import Exchange, Currency, Ticker
+#from .models import Currency
+#from .models import Ticker
+from .forms import EodForm
+from .forms import DateForm
 
 @never_cache
 def register(request): # user register form
@@ -54,13 +56,25 @@ def logout_request(request):
     #messages.info(request, f"You are now logged out.") #uncomment to debug
     return redirect('index')
             
-#index list view
+#index user dashboard view
 def index(request):
+    if request.method == 'POST':
+        form = EodForm(data=request.POST)
+        date_form = DateForm(data=request.POST)
+        if form.is_valid() and date_form.is_valid():
+            temp = 'test'
+        else:
+            messages.error(request,"Error on submit.")
+
+    form = EodForm()
+    date_form = DateForm()
     pages_list = ['exchange', 'currency', 'ticker'] #todo - move to model
     context = { #params: page name, list of links
         'page_name': 'Dashboard',
         'pages_list': pages_list,
-    }
+        'form': form,
+        'date_form': date_form,
+    }    
     return render(request, 'charts/index.html', context=context)
 
 def exchange(request):
