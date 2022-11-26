@@ -1,0 +1,8 @@
+
+{% if eod_data %}
+    {% for item in eod_data %}
+        {% for key, value in item.items %}
+            <p>{{key}} : {{value}}</p>
+        {% endfor %}
+    {% endfor %}
+{% endif %}

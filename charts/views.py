@@ -12,6 +12,7 @@ from .models import Exchange, Currency, Ticker
 #from .models import Ticker
 from .forms import EodForm
 from .forms import DateForm
+from .fin_api import FinApi, EodData
 
 @never_cache
 def register(request): # user register form
@@ -57,12 +58,18 @@ def logout_request(request):
     return redirect('index')
             
 #index user dashboard view
+@never_cache
 def index(request):
     if request.method == 'POST':
         form = EodForm(data=request.POST)
         date_form = DateForm(data=request.POST)
         if form.is_valid() and date_form.is_valid():
-            temp = 'test'
+            #print(form.cleaned_data['ticker_choice'])
+            #pass
+            eod_data = getApiEod(date_form.cleaned_data['date_field'] , form.cleaned_data['ticker_choice'], False)
+            
+            data = eod_data['data']
+            return render(request, 'charts/eod_data.html', context={'eod_data': data})
         else:
             messages.error(request,"Error on submit.")
 
@@ -76,6 +83,29 @@ def index(request):
         'date_form': date_form,
     }    
     return render(request, 'charts/index.html', context=context)
+
+def getApiEod(eod_date, ticker, is_latest):
+    #print(type(ticker))
+    print('hello')
+    #eod_data = EodData()
+    fin_api = FinApi()
+    eod_data = fin_api.getEod(eod_date, ticker, is_latest)
+    print(ticker)
+    try:
+        query_results = Ticker.objects.get(name=ticker)
+    except Ticker.DoesNotExist:
+        print('ticker failed')
+
+    print(f'{query_results.symbol}')
+    symbol = query_results.symbol
+    print(symbol)
+    """ for item in symbol:
+        print(item.symbol) """
+    print('goodbye')
+    #pass
+    return fin_api.getEod(eod_date, symbol, is_latest)
+
+    
 
 def exchange(request):
     try:
@@ -109,7 +139,7 @@ def currency(request):
             'page_name': 'Available Currencies',
             'currency_detail': 'currency_detail',
         }
-    except Exchange.DoesNotExist:
+    except Currency.DoesNotExist:
         raise Http404()
     return render(request, 'charts/currency.html', context=context)
 
@@ -120,7 +150,7 @@ def currency_detail(request, currency_id):
             'currency_content': currency_content,
             'page_name': 'Currency Details',
         }
-    except Exchange.DoesNotExist:
+    except Currency.DoesNotExist:
         raise Http404()
     return render(request, 'charts/currency_detail.html', context=context)
 
@@ -132,7 +162,7 @@ def ticker(request):
             'page_name': 'Available Tickers',
             'ticker_detail': 'ticker_detail',
         }
-    except Exchange.DoesNotExist:
+    except Ticker.DoesNotExist:
         raise Http404()
     return render(request, 'charts/ticker.html', context=context)
 
@@ -143,6 +173,6 @@ def ticker_detail(request, ticker_id):
             'ticker_content': ticker_content,
             'page_name': 'Ticker Details',
         }
-    except Exchange.DoesNotExist:
+    except Ticker.DoesNotExist:
         raise Http404()
     return render(request, 'charts/ticker_detail.html', context=context)

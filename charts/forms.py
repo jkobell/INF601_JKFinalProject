@@ -9,7 +9,7 @@ class EodForm(forms.Form):
     query = Ticker.objects.all().distinct().order_by('name')
     #query_choices = [(ticker.name, f"{ticker.name} - {ticker.symbol}") for ticker in query] #default=0
     query_choices = [('', 'Select ticker')] + [(ticker.name, f"{ticker.name} - {ticker.symbol}") for ticker in query]
-    ticker_choices = forms.ChoiceField(choices=query_choices, required=False, widget=forms.Select(attrs={'style': 'width:100%; text-align:center;'}), label='Tickers')
+    ticker_choice = forms.ChoiceField(choices=query_choices, required=True, widget=forms.Select(attrs={'style': 'width:100%; text-align:center;'}), label='Tickers')
 
 class DateForm(forms.Form):
         #date_field = forms.DateField(required=True, label='EOD Date', initial = datetime.date.today()).widget_attrs() #enter date into field box
