@@ -12,8 +12,11 @@ class EodForm(forms.Form):
     ticker_choice = forms.ChoiceField(choices=query_choices, required=True, widget=forms.Select(attrs={'style': 'width:100%; text-align:center;'}), label='Tickers')
 
 class DateForm(forms.Form):
-        #date_field = forms.DateField(required=True, label='EOD Date', initial = datetime.date.today()).widget_attrs() #enter date into field box
-        date_field = forms.DateField(widget=forms.SelectDateWidget(years=YEAR_CHOICES, 
-                                     attrs={'style': 'width:100%; text-align:center'}), label='EOD Date')
+    #date_field = forms.DateField(required=True, label='EOD Date', initial = datetime.date.today()).widget_attrs() #enter date into field box
+    date_field = forms.DateField(widget=forms.SelectDateWidget(years=YEAR_CHOICES, 
+                                    attrs={'style': 'width:100%; text-align:center'}), label='EOD Date')
+
+class EodCheckboxForm(forms.Form):
+    is_latest = forms.BooleanField(label='Latest', required=False, initial=False)
         
     

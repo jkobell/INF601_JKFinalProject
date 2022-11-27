@@ -26,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'place-key-here'
 
 # DO NOT COMMIT
-API_ACCESS_KEY = 'please place key here'
+#API_ACCESS_KEY = 'please place key here'
+
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

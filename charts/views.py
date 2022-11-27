@@ -8,11 +8,8 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.cache import never_cache
 from .models import Exchange, Currency, Ticker
-#from .models import Currency
-#from .models import Ticker
-from .forms import EodForm
-from .forms import DateForm
-from .fin_api import FinApi, EodData
+from .forms import EodForm, DateForm, EodCheckboxForm
+from .fin_api import FinApi
 
 @never_cache
 def register(request): # user register form
@@ -63,11 +60,9 @@ def index(request):
     if request.method == 'POST':
         form = EodForm(data=request.POST)
         date_form = DateForm(data=request.POST)
-        if form.is_valid() and date_form.is_valid():
-            #print(form.cleaned_data['ticker_choice'])
-            #pass
-            eod_data = getApiEod(date_form.cleaned_data['date_field'] , form.cleaned_data['ticker_choice'], False)
-            
+        checkbox_form = EodCheckboxForm(data=request.POST)
+        if form.is_valid() and date_form.is_valid() and checkbox_form.is_valid():
+            eod_data = getApiEod(date_form.cleaned_data['date_field'] , form.cleaned_data['ticker_choice'], checkbox_form.data.get('is_latest'))            
             data = eod_data['data']
             return render(request, 'charts/eod_data.html', context={'eod_data': data})
         else:
@@ -75,37 +70,27 @@ def index(request):
 
     form = EodForm()
     date_form = DateForm()
+    checkbox_form = EodCheckboxForm()
     pages_list = ['exchange', 'currency', 'ticker'] #todo - move to model
     context = { #params: page name, list of links
         'page_name': 'Dashboard',
         'pages_list': pages_list,
         'form': form,
         'date_form': date_form,
+        'checkbox_form': checkbox_form,
     }    
     return render(request, 'charts/index.html', context=context)
 
 def getApiEod(eod_date, ticker, is_latest):
-    #print(type(ticker))
-    print('hello')
-    #eod_data = EodData()
     fin_api = FinApi()
-    eod_data = fin_api.getEod(eod_date, ticker, is_latest)
-    print(ticker)
+
     try:
         query_results = Ticker.objects.get(name=ticker)
     except Ticker.DoesNotExist:
-        print('ticker failed')
-
-    print(f'{query_results.symbol}')
-    symbol = query_results.symbol
-    print(symbol)
-    """ for item in symbol:
-        print(item.symbol) """
-    print('goodbye')
-    #pass
-    return fin_api.getEod(eod_date, symbol, is_latest)
-
+        raise Http404() #logging please
     
+    symbol = query_results.symbol
+    return fin_api.getEod(eod_date, symbol, is_latest)
 
 def exchange(request):
     try:
