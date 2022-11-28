@@ -18,5 +18,6 @@ class DateForm(forms.Form):
 
 class EodCheckboxForm(forms.Form):
     is_latest = forms.BooleanField(label='Latest', required=False, initial=False)
+    
         
     

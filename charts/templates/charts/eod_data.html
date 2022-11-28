@@ -1,8 +1,66 @@
-
-{% if eod_data %}
-    {% for item in eod_data %}
-        {% for key, value in item.items %}
-            <p>{{key}} : {{value}}</p>
-        {% endfor %}
-    {% endfor %}
+{% extends 'base.html' %}
+{% block header %}
+    {% if user.is_authenticated %}
+    <div class="d-flex justify-content-center">
+        <div class="flex-fill text-center text-light fw-bolder fs-2 bg-secondary bg-opacity-50">{{page_name}}</div>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+    {% if eod_data %}
+    <div class="container-fluid border-top border-2 border-secondary" style="height: 100vh; background-color: rgb(240, 240, 240);">
+            <div class="d-flex justify-content-center pt-3">
+                {% for item in eod_data %}
+                    {% for key, value in item.items %}
+                        {% if key == 'symbol' %}
+                            <p class="fs-4">Symbol: {{ value }}</p>
+                        {% endif %}
+                    {% endfor %}                
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-center">
+                <div class="border-bottom border-2 border-secondary w-25"></div>
+            </div>
+            <div class="d-flex justify-content-center pt-3">
+                <p class="fs-5">Date: {{eod_date}}</p>
+            </div>
+        <!-- </div> -->
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr class="table-primary table-bordered border-dark">
+                    <th scope="col">Open</th>
+                    <th scope="col">High</th>
+                    <th scope="col">Low</th>
+                    <th scope="col">Close</th>
+                    <th scope="col">Volume</th>
+                    <th scope="col">Adj High</th>
+                    <th scope="col">Adj Low</th>
+                    <th scope="col">Adj Close</th>
+                    <th scope="col">Adj Open</th>
+                    <th scope="col">Adj Volume</th>
+                    <th scope="col">Split Factor</th>
+                    <th scope="col">Dividend</th>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Exchange</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr scope="row" class="table-secondary border-secondary">
+                    {% for item in eod_data %}
+                        {% for key, value in item.items %}
+                            {% if key == 'date' %}
+                            <td>{{eod_date}}</td>
+                            {% else %}
+                            <td>{{value}}</td>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}          
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 {% endif %}
+{% endblock %}

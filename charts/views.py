@@ -1,6 +1,8 @@
 # INF601 - Advanced Programming in Python
 # James Kobell
 # Final Project
+import dateparser as dp # for parse json datetime string value
+#from django.utils import formats
 from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -54,7 +56,7 @@ def logout_request(request):
     #messages.info(request, f"You are now logged out.") #uncomment to debug
     return redirect('index')
             
-#index user dashboard view
+#index user dashboard view with forms
 @never_cache
 def index(request):
     if request.method == 'POST':
@@ -64,7 +66,15 @@ def index(request):
         if form.is_valid() and date_form.is_valid() and checkbox_form.is_valid():
             eod_data = getApiEod(date_form.cleaned_data['date_field'] , form.cleaned_data['ticker_choice'], checkbox_form.data.get('is_latest'))            
             data = eod_data['data']
-            return render(request, 'charts/eod_data.html', context={'eod_data': data})
+            eod_date = ''
+            for item in data:
+                for key in item:
+                    if key == 'date':
+                        eod_date = item[key]
+                        
+            time = dp.parse(item['date']) # convert value to datetime object
+            ftime = time.strftime("%m/%d/%Y") # format date - 01/01/2099
+            return render(request, 'charts/eod_data.html', context={'eod_data': data, 'eod_date': ftime, 'page_name': 'End of Day'})
         else:
             messages.error(request,"Error on submit.")
 
