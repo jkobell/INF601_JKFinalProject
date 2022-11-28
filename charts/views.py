@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.cache import never_cache
 from .models import Exchange, Currency, Ticker
-from .forms import EodForm, DateForm, EodCheckboxForm
+from .forms import EodForm, DateForm, EodCheckboxForm, ChartMovingAverageRadio
 from .fin_api import FinApi
 
 @never_cache
@@ -63,6 +63,8 @@ def index(request):
         form = EodForm(data=request.POST)
         date_form = DateForm(data=request.POST)
         checkbox_form = EodCheckboxForm(data=request.POST)
+        conf_chart_radio_form = ChartMovingAverageRadio(data=request.POST)
+
         if form.is_valid() and date_form.is_valid() and checkbox_form.is_valid():
             eod_data = getApiEod(date_form.cleaned_data['date_field'] , form.cleaned_data['ticker_choice'], checkbox_form.data.get('is_latest'))            
             data = eod_data['data']
@@ -78,9 +80,15 @@ def index(request):
         else:
             messages.error(request,"Error on submit.")
 
+        if form.is_valid() and conf_chart_radio_form.is_valid():
+            eod_data = getApiEodLimit(conf_chart_radio_form.cleaned_data['mov_av_radio'] , form.cleaned_data['ticker_choice'])
+            print('test limit call')
+            print(eod_data)
+
     form = EodForm()
     date_form = DateForm()
     checkbox_form = EodCheckboxForm()
+    conf_chart_radio_form = ChartMovingAverageRadio()
     pages_list = ['exchange', 'currency', 'ticker'] #todo - move to model
     context = { #params: page name, list of links
         'page_name': 'Dashboard',
@@ -88,6 +96,7 @@ def index(request):
         'form': form,
         'date_form': date_form,
         'checkbox_form': checkbox_form,
+        'conf_chart_radio_form': conf_chart_radio_form,
     }    
     return render(request, 'charts/index.html', context=context)
 
@@ -101,6 +110,31 @@ def getApiEod(eod_date, ticker, is_latest):
     
     symbol = query_results.symbol
     return fin_api.getEod(eod_date, symbol, is_latest)
+
+def getApiEodLimit(limit, ticker):
+    fin_api = FinApi()
+    eod_limit = ''
+    match limit:
+        case '1':
+            eod_limit = '50'
+        case '2':
+            eod_limit = '100'
+        case '3':
+            eod_limit = '200'
+        case '4':
+            eod_limit = '400'
+        case _:
+            raise ValueError("Not a valid limit.")
+
+    try:
+        query_results = Ticker.objects.get(name=ticker)
+    except Ticker.DoesNotExist:
+        raise Http404() #logging please
+    
+    symbol = query_results.symbol
+    print(f'SYMBOL: {symbol}')
+    print(f'LIMIT: {eod_limit}')
+    return fin_api.getEodLimit(eod_limit, symbol)
 
 def exchange(request):
     try:
