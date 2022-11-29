@@ -38,8 +38,14 @@
                     </div> 
                 </form>
             </div>
-            <div class="col-8 border-end border-2 border-secondary py-2 bg-light" style="height: 100vh;">
-                <h3>display chart here</h3>
+            <div class="col-8 border-end border-2 border-secondary" style="height: 100vh; background-color: lightgrey;">
+                <div class="mt-2 d-flex justify-content-center py-3 bg-light">
+                    {% if chart_img %}
+                    <div>
+                        {{ chart_img|safe }}                 
+                    </div>
+                    {% endif %}
+                </div>
             </div>
             <div class="col-2 py-2" style="height: 100vh; background-color: lightgrey;">
                 <div class="mt-2 d-flex justify-content-center bg-secondary bg-opacity-25 pt-1">

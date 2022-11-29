@@ -12,6 +12,7 @@ from django.views.decorators.cache import never_cache
 from .models import Exchange, Currency, Ticker
 from .forms import EodForm, DateForm, EodCheckboxForm, ChartMovingAverageRadio
 from .fin_api import FinApi
+from .moving_avg import MovingAvg
 
 @never_cache
 def register(request): # user register form
@@ -55,7 +56,24 @@ def logout_request(request):
     logout(request) #flushes Session
     #messages.info(request, f"You are now logged out.") #uncomment to debug
     return redirect('index')
-            
+
+def renderDashboard(request, chart_img):
+        form = EodForm()
+        date_form = DateForm()
+        checkbox_form = EodCheckboxForm()
+        conf_chart_radio_form = ChartMovingAverageRadio()
+        pages_list = ['exchange', 'currency', 'ticker'] #todo - move to model
+        context = { #params: page name, list of links
+            'page_name': 'Dashboard',
+            'pages_list': pages_list,
+            'form': form,
+            'date_form': date_form,
+            'checkbox_form': checkbox_form,
+            'conf_chart_radio_form': conf_chart_radio_form,
+            'chart_img': chart_img,
+        }    
+        return render(request, 'charts/index.html', context=context)
+
 #index user dashboard view with forms
 @never_cache
 def index(request):
@@ -81,24 +99,33 @@ def index(request):
             messages.error(request,"Error on submit.")
 
         if form.is_valid() and conf_chart_radio_form.is_valid():
-            eod_data = getApiEodLimit(conf_chart_radio_form.cleaned_data['mov_av_radio'] , form.cleaned_data['ticker_choice'])
-            print('test limit call')
-            print(eod_data)
+            img_chart = getApiEodLimit(conf_chart_radio_form.cleaned_data['mov_av_radio'] , form.cleaned_data['ticker_choice'])
+            #print('test limit call')
+            #print(img_chart)
+            #request = None
+            print('im in conf chart if')
+            return renderDashboard(request, img_chart)
+            
+    
+    param = None
+    return renderDashboard(request, param)
 
-    form = EodForm()
-    date_form = DateForm()
-    checkbox_form = EodCheckboxForm()
-    conf_chart_radio_form = ChartMovingAverageRadio()
-    pages_list = ['exchange', 'currency', 'ticker'] #todo - move to model
-    context = { #params: page name, list of links
-        'page_name': 'Dashboard',
-        'pages_list': pages_list,
-        'form': form,
-        'date_form': date_form,
-        'checkbox_form': checkbox_form,
-        'conf_chart_radio_form': conf_chart_radio_form,
-    }    
-    return render(request, 'charts/index.html', context=context)
+    """ def renderDashboard(chart_img):
+        form = EodForm()
+        date_form = DateForm()
+        checkbox_form = EodCheckboxForm()
+        conf_chart_radio_form = ChartMovingAverageRadio()
+        pages_list = ['exchange', 'currency', 'ticker'] #todo - move to model
+        context = { #params: page name, list of links
+            'page_name': 'Dashboard',
+            'pages_list': pages_list,
+            'form': form,
+            'date_form': date_form,
+            'checkbox_form': checkbox_form,
+            'conf_chart_radio_form': conf_chart_radio_form,
+            'chart_img': chart_img,
+        }    
+        return render(request, 'charts/index.html', context=context) """
 
 def getApiEod(eod_date, ticker, is_latest):
     fin_api = FinApi()
@@ -113,6 +140,7 @@ def getApiEod(eod_date, ticker, is_latest):
 
 def getApiEodLimit(limit, ticker):
     fin_api = FinApi()
+    mov_avg = MovingAvg()
     eod_limit = ''
     match limit:
         case '1':
@@ -134,7 +162,17 @@ def getApiEodLimit(limit, ticker):
     symbol = query_results.symbol
     print(f'SYMBOL: {symbol}')
     print(f'LIMIT: {eod_limit}')
-    return fin_api.getEodLimit(eod_limit, symbol)
+    
+    #raw = fin_api.getEodLimit(eod_limit, symbol)
+    #data = raw['data']
+    #svg_chart = mov_avg.BuildMovAvgChart(data, limit)
+
+    data = None
+    svg_chart = mov_avg.BuildMovAvgChart(data, eod_limit)
+    return svg_chart
+
+
+
 
 def exchange(request):
     try:
