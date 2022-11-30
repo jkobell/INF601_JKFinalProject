@@ -13,6 +13,7 @@ from .models import Exchange, Currency, Ticker
 from .forms import EodForm, DateForm, EodCheckboxForm, ChartMovingAverageRadio
 from .fin_api import FinApi
 from .moving_avg import MovingAvg
+import json
 
 @never_cache
 def register(request): # user register form
@@ -57,6 +58,7 @@ def logout_request(request):
     #messages.info(request, f"You are now logged out.") #uncomment to debug
     return redirect('index')
 
+@never_cache
 def renderDashboard(request, chart_img):
         form = EodForm()
         date_form = DateForm()
@@ -77,13 +79,24 @@ def renderDashboard(request, chart_img):
 #index user dashboard view with forms
 @never_cache
 def index(request):
+    messages.get_messages(request).used = True
     if request.method == 'POST':
         form = EodForm(data=request.POST)
         date_form = DateForm(data=request.POST)
         checkbox_form = EodCheckboxForm(data=request.POST)
         conf_chart_radio_form = ChartMovingAverageRadio(data=request.POST)
 
-        if form.is_valid() and date_form.is_valid() and checkbox_form.is_valid():
+        if form.is_valid() and conf_chart_radio_form.is_valid():
+            img_chart = getApiEodLimit(conf_chart_radio_form.cleaned_data['mov_av_radio'] , form.cleaned_data['ticker_choice'])
+            #print('test limit call')
+            #print(img_chart)
+            #request = None
+            print('im in conf chart if')
+            #return renderDashboard(request, img_chart)
+            return renderDashboard(request, img_chart)
+            #return HttpResponseRedirect(reverse('index'))
+
+        elif form.is_valid() and date_form.is_valid() and checkbox_form.is_valid():
             eod_data = getApiEod(date_form.cleaned_data['date_field'] , form.cleaned_data['ticker_choice'], checkbox_form.data.get('is_latest'))            
             data = eod_data['data']
             eod_date = ''
@@ -94,17 +107,11 @@ def index(request):
                         
             time = dp.parse(item['date']) # convert value to datetime object
             ftime = time.strftime("%m/%d/%Y") # format date - 01/01/2099
-            return render(request, 'charts/eod_data.html', context={'eod_data': data, 'eod_date': ftime, 'page_name': 'End of Day'})
+            return render(request, 'charts/eod_data.html', context={'eod_data': data, 'eod_date': ftime, 'page_name': 'End of Day'}) 
+            #render(request, 'charts/eod_data.html', context={'eod_data': data, 'eod_date': ftime, 'page_name': 'End of Day'}) 
+
         else:
             messages.error(request,"Error on submit.")
-
-        if form.is_valid() and conf_chart_radio_form.is_valid():
-            img_chart = getApiEodLimit(conf_chart_radio_form.cleaned_data['mov_av_radio'] , form.cleaned_data['ticker_choice'])
-            #print('test limit call')
-            #print(img_chart)
-            #request = None
-            print('im in conf chart if')
-            return renderDashboard(request, img_chart)
             
     
     param = None
@@ -141,7 +148,7 @@ def getApiEod(eod_date, ticker, is_latest):
 def getApiEodLimit(limit, ticker):
     fin_api = FinApi()
     mov_avg = MovingAvg()
-    eod_limit = ''
+    #eod_limit = ''
     match limit:
         case '1':
             eod_limit = '50'
@@ -163,12 +170,14 @@ def getApiEodLimit(limit, ticker):
     print(f'SYMBOL: {symbol}')
     print(f'LIMIT: {eod_limit}')
     
-    #raw = fin_api.getEodLimit(eod_limit, symbol)
-    #data = raw['data']
-    #svg_chart = mov_avg.BuildMovAvgChart(data, limit)
+    raw = fin_api.getEodLimit(eod_limit, symbol)
+    raw_data = raw['data']
+    str_data = json.dumps(raw_data)
+        
+    svg_chart = mov_avg.BuildMovAvgChart(str_data, eod_limit)
 
-    data = None
-    svg_chart = mov_avg.BuildMovAvgChart(data, eod_limit)
+    #data = None
+    #svg_chart = mov_avg.BuildMovAvgChart(data, eod_limit)
     return svg_chart
 
 
