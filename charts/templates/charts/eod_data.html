@@ -1,14 +1,28 @@
 {% extends 'base.html' %}
 {% block header %}
     {% if user.is_authenticated %}
-    <div class="d-flex justify-content-center">
-        <div class="flex-fill text-center text-light fw-bolder fs-2 bg-secondary bg-opacity-50">{{page_name}}</div>
+    <div class="navbar bg-secondary bg-opacity-50">
+        <div class="nav container-fluid col-md-5 justify-content-center">
+            <div class="nav-item"><a class="nav-link text-primary fs-4" href="{% url 'index' %}">Back to Dahboard</a></div>
+        </div>
+        <div class="container-fluid col-md-7 justify-content-start">
+            {% if page_name %}
+            <div class="text-light fw-bolder fs-2 ms-5">{{page_name}}</div>
+            {% endif %}
+        </div>
+        <!-- <div class="flex-fill text-center text-light fw-bolder fs-2 bg-secondary bg-opacity-50">{{page_name}}</div> -->
     </div>
     {% endif %}
 {% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
-    {% if eod_data %}
+    {% if error_data_message %}
+    <div class="d-flex align-items-center justify-content-center py-3" style="height: 75vh; background-color: rgb(225, 225, 225);">
+        <div>
+            <div class="text-primary fw-normal fs-1">{{error_data_message}}</div>
+        </div>
+    </div>
+    {% elif eod_data %}
     <div class="container-fluid border-top border-2 border-secondary" style="height: 100vh; background-color: rgb(240, 240, 240);">
             <div class="d-flex justify-content-center pt-3">
                 {% for item in eod_data %}

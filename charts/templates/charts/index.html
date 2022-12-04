@@ -38,11 +38,15 @@
                     </div> 
                 </form>
             </div>
-            <div class="col-8 border-end border-2 border-secondary" style="height: 100vh; background-color: lightgrey;">
-                <div class="mt-2 d-flex justify-content-center py-3 bg-light">
+            <div class="col-8 border-end border-2 border-secondary pt-2" style="height: 100vh; background-color: lightgrey;">
+                <div class="mt-2 d-flex align-items-center justify-content-center py-3 bg-light" style="height: 75vh;">
                     {% if chart_img %}
                     <div>
                         {{ chart_img|safe }}                 
+                    </div>
+                    {% else %}
+                    <div>
+                        <div class="fs-1 fw-lighter text-primary" >Chart Display Area</div>
                     </div>
                     {% endif %}
                 </div>
@@ -53,7 +57,7 @@
                 </div>
                 <form method="post">
                     {% csrf_token %}
-                    <div class="d-flex justify-content-center form-control form-group bg-light mb-3 py-4 px-3">
+                    <div class="d-flex justify-content-center form-control form-group bg-light mb-3 py-4 px-3" style="height: 50vh;">
                         <div>
                             <div class="form-control-lg">                        
                                 {{form.errors}}
@@ -63,7 +67,7 @@
                                 {{conf_chart_radio_form.errors}}
                                 {{conf_chart_radio_form}}
                             </div>
-                            <div class="form-control-lg">
+                            <div class="form-control-lg pt-3">
                                 <button type="submit" class="btn ps-4 pe-4 btn-primary opacity-75">Show Chart</button>
                             </div> 
                         </div>

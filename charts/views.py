@@ -98,16 +98,27 @@ def index(request):
 
         elif form.is_valid() and date_form.is_valid() and checkbox_form.is_valid():
             eod_data = getApiEod(date_form.cleaned_data['date_field'] , form.cleaned_data['ticker_choice'], checkbox_form.data.get('is_latest'))            
-            data = eod_data['data']
-            eod_date = ''
-            for item in data:
-                for key in item:
-                    if key == 'date':
-                        eod_date = item[key]
-                        
-            time = dp.parse(item['date']) # convert value to datetime object
-            ftime = time.strftime("%m/%d/%Y") # format date - 01/01/2099
-            return render(request, 'charts/eod_data.html', context={'eod_data': data, 'eod_date': ftime, 'page_name': 'End of Day'}) 
+            pagination_count = eod_data['pagination']['count']
+            if pagination_count > 0:
+                data = eod_data['data']
+                eod_date = ''
+                for item in data:
+                    for key in item:
+                        if key == 'date':
+                            eod_date = item[key]
+                            
+                time = dp.parse(item['date']) # convert value to datetime object
+                ftime = time.strftime("%m/%d/%Y") # format date - 01/01/2099
+                context = {
+                    'eod_data': data, 
+                    'eod_date': ftime, 
+                    'page_name': 'End of Day'
+                    }
+            else:
+                context = {
+                    'error_data_message': 'No EOD data is available for the selected date.',
+                    }
+            return render(request, 'charts/eod_data.html', context) 
             #render(request, 'charts/eod_data.html', context={'eod_data': data, 'eod_date': ftime, 'page_name': 'End of Day'}) 
 
         else:
