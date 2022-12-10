@@ -1,0 +1,25 @@
+2022-12-10 14:40:00,888 C:\Training\source\INF601_JKFinalProject\charts\views.py changed, reloading.
+2022-12-10 14:44:21,892 C:\Training\source\INF601_JKFinalProject\charts\views.py changed, reloading.
+2022-12-10 14:53:22,384 C:\Training\source\INF601_JKFinalProject\charts\views.py changed, reloading.
+2022-12-10 14:53:44,912 Internal Server Error: /charts/
+Traceback (most recent call last):
+  File "C:\Training\source\INF601_JKFinalProject\djangovenv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Training\source\INF601_JKFinalProject\djangovenv\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Training\source\INF601_JKFinalProject\djangovenv\lib\site-packages\django\views\decorators\cache.py", line 62, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "C:\Training\source\INF601_JKFinalProject\charts\views.py", line 103, in index
+    time = dp.parse(data[1]['date']) # convert value to datetime object
+IndexError: list index out of range
+2022-12-10 14:53:57,788 C:\Training\source\INF601_JKFinalProject\charts\views.py changed, reloading.
+2022-12-10 15:02:05,694 C:\Training\source\INF601_JKFinalProject\charts\views.py changed, reloading.
+2022-12-10 15:10:37,178 C:\Training\source\INF601_JKFinalProject\charts\views.py changed, reloading.
+2022-12-10 15:12:53,879 C:\Training\source\INF601_JKFinalProject\charts\views.py changed, reloading.
+2022-12-10 15:20:35,175 C:\Training\source\INF601_JKFinalProject\charts\moving_avg.py changed, reloading.
+2022-12-10 15:27:37,025 C:\Training\source\INF601_JKFinalProject\charts\moving_avg.py changed, reloading.
+2022-12-10 15:30:48,730 C:\Training\source\INF601_JKFinalProject\charts\models.py changed, reloading.
+2022-12-10 15:32:23,928 C:\Training\source\INF601_JKFinalProject\charts\forms.py changed, reloading.
+2022-12-10 15:39:25,606 C:\Training\source\INF601_JKFinalProject\charts\fin_api.py changed, reloading.
+2022-12-10 15:45:24,811 C:\Training\source\INF601_JKFinalProject\charts\apps.py changed, reloading.
+2022-12-10 15:54:27,569 C:\Training\source\INF601_JKFinalProject\fin_ticker\settings.py changed, reloading.

@@ -58,7 +58,7 @@ class Chart(models.Model): #active trading and historical data
     def __str__(self):# replaces Object(1) in displayed name
         return 'Chart: ' + self.name
 
-class Intraday(models.Model): #for active trading charts
+class Intraday(models.Model): #for active trading charts; future feature
     ticker = models.ForeignKey(Ticker, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)#
     acronym = models.CharField(max_length=25)
@@ -71,7 +71,7 @@ class Intraday(models.Model): #for active trading charts
     def __str__(self):# replaces Object(1) in displayed name
         return 'Intraday: ' + self.name
 
-class Accounts(models.Model):
+class Accounts(models.Model): # future feature
     auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     has_month_api_calls_limit = models.BooleanField()
     month_api_calls_limit = models.SmallIntegerField()
