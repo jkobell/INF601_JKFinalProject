@@ -6,8 +6,8 @@
 import os
 import sys
 
-
-def main(): #starts project in server
+# main method to start project
+def main(): 
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fin_ticker.settings')
     try:
@@ -21,5 +21,5 @@ def main(): #starts project in server
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # name == manage.py
     main()

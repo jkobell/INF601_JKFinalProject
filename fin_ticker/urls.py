@@ -21,6 +21,6 @@ from django.urls import include, path
 
 #site entry urls
 urlpatterns = [
-    path('charts/', include('charts.urls')),
-    path('admin/', admin.site.urls),
+    path('charts/', include('charts.urls')), #user route
+    path('admin/', admin.site.urls), # admin route
 ]
